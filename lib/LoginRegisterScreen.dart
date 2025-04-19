@@ -1,3 +1,4 @@
+import 'package:chairbrow/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
@@ -8,32 +9,46 @@ class LoginRegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login / Register')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-              child: Text('Login'),
+      backgroundColor: AppColors.primaryColor,
+      body: SafeArea(
+          top: false,
+          child: Container(
+            margin: EdgeInsets.only(top: 40,),
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/onboarding_sipeduli.png'),
+                    fit: BoxFit.fill
+                )
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterScreen()),
-                );
-              },
-              child: Text('Register'),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondaryColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                              (root) => false
+                      );
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      alignment: Alignment.center,
+                      child: Text('Mulai', style: TextStyle(
+                          color: AppColors.quaternaryColor
+                      ),
+                    ),),
+                  ),
+                  const SizedBox(height: 60,),
+                ],
+              ),
             ),
-          ],
-        ),
+          )
       ),
     );
   }

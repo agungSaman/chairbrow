@@ -1,3 +1,4 @@
+import 'package:chairbrow/splash_screen.dart';
 import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,8 +13,43 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final AuthService authService = AuthService(SupabaseClient(AppConstant.EXPO_PUBLIC_SUPABASE_URL, AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY));
-  final UserService userService = UserService(SupabaseClient(AppConstant.EXPO_PUBLIC_SUPABASE_URL, AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY));
+  final AuthService authService = AuthService(
+      SupabaseClient(
+          AppConstant.EXPO_PUBLIC_SUPABASE_URL,
+          AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+          authOptions: const FlutterAuthClientOptions(
+            authFlowType: AuthFlowType.implicit,
+          ),
+          realtimeClientOptions: const RealtimeClientOptions(
+            logLevel: RealtimeLogLevel.info,
+          ),
+          storageOptions: const StorageClientOptions(
+            retryAttempts: 10,
+          ),
+          postgrestOptions: PostgrestClientOptions(
+            schema: 'public',
+          )
+      )
+  );
+
+  final UserService userService = UserService(
+      SupabaseClient(
+          AppConstant.EXPO_PUBLIC_SUPABASE_URL,
+          AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+          authOptions: const FlutterAuthClientOptions(
+            authFlowType: AuthFlowType.implicit,
+          ),
+          realtimeClientOptions: const RealtimeClientOptions(
+            logLevel: RealtimeLogLevel.info,
+          ),
+          storageOptions: const StorageClientOptions(
+            retryAttempts: 10,
+          ),
+          postgrestOptions: PostgrestClientOptions(
+            schema: 'public',
+          )
+      )
+  );
 
   // Controllers untuk input form
   final TextEditingController nameController = TextEditingController();
@@ -29,6 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Memuat data pengguna dari Supabase
   Future<void> _loadUserData() async {
+    userService.user = authService.user;
     final userData = await userService.getUserProfile();
     setState(() {
       nameController.text = userData['name'];
@@ -121,7 +158,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () async {
                 // Logout pengguna
                 await authService.logout();
-                Navigator.pushReplacementNamed(context, '/login'); // Kembali ke halaman login
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                    builder: (context) => SplashScreen()
+                ), (root) => false); // Kembali ke halaman login
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red, // Warna tombol merah

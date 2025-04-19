@@ -2,11 +2,29 @@ import 'package:chairbrow/services/booking%20_service.dart';
 import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 
 import 'booking_detail_screen.dart';
 
 class HistoryScreen extends StatelessWidget {
-  final BookingService bookingService = BookingService(SupabaseClient(AppConstant.EXPO_PUBLIC_SUPABASE_URL, AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY));
+  final BookingService bookingService = BookingService(
+      SupabaseClient(
+          AppConstant.EXPO_PUBLIC_SUPABASE_URL,
+          AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+          authOptions: const FlutterAuthClientOptions(
+            authFlowType: AuthFlowType.implicit,
+          ),
+          realtimeClientOptions: const RealtimeClientOptions(
+            logLevel: RealtimeLogLevel.info,
+          ),
+          storageOptions: const StorageClientOptions(
+            retryAttempts: 10,
+          ),
+          postgrestOptions: PostgrestClientOptions(
+            schema: 'public',
+          )
+      )
+  );
 
   HistoryScreen({super.key});
 
@@ -35,25 +53,33 @@ class HistoryScreen extends StatelessWidget {
               itemCount: bookings.length,
               itemBuilder: (context, index) {
                 final booking = bookings[index];
-                return ListTile(
-                  title: Text(booking['facilities']['name']), // Nama fasilitas
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Date: ${booking['booking_date']}'), // Tanggal pemesanan
-                      Text('Status: ${booking['status']}'), // Status pemesanan
-                    ],
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey
+                    ),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios), // Ikon panah kanan
-                  onTap: () {
-                    // Navigasi ke detail pemesanan (opsional)
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookingDetailScreen(booking: booking),
-                      ),
-                    );
-                  },
+                  child: ListTile(
+                    title: Text(booking['Facilities']['facility_name']), // Nama fasilitas
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Date: ${DateFormat('EE, dd MMMM yyyy').format(DateTime.parse(booking['booking_date']))}'), // Tanggal pemesanan
+                        Text('Status: ${booking['status']}'), // Status pemesanan
+                      ],
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios), // Ikon panah kanan
+                    onTap: () {
+                      // Navigasi ke detail pemesanan (opsional)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookingDetailScreen(booking: booking),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );

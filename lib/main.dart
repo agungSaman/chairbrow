@@ -5,19 +5,24 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Supabase.initialize(
-    url: AppConstant.EXPO_PUBLIC_SUPABASE_URL,
-    anonKey: AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY,
-    authOptions: const FlutterAuthClientOptions(
-      authFlowType: AuthFlowType.pkce,
-    ),
-    realtimeClientOptions: const RealtimeClientOptions(
-      logLevel: RealtimeLogLevel.info,
-    ),
-    storageOptions: const StorageClientOptions(
-      retryAttempts: 10,
-    ),
+      url: AppConstant.EXPO_PUBLIC_SUPABASE_URL,
+      anonKey: AppConstant.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+      authOptions: const FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.implicit,
+      ),
+      realtimeClientOptions: const RealtimeClientOptions(
+        logLevel: RealtimeLogLevel.info,
+      ),
+      storageOptions: const StorageClientOptions(
+        retryAttempts: 10,
+      ),
+      postgrestOptions: PostgrestClientOptions(
+        schema: 'public',
+      )
   );
+
   runApp(const MyApp());
 }
 
