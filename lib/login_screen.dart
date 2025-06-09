@@ -34,68 +34,70 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 120),
-              child: Image.asset("assets/icons/ic_logo.png", scale: 3,),
-            ),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 120),
+                child: Image.asset("assets/icons/ic_logo.png", scale: 3,),
+              ),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
-              ),
+                ),
 
-            ),
-            const SizedBox(height: 10,),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
+              ),
+              const SizedBox(height: 10,),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 20,),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await authService.login(emailController.text, passwordController.text);
-                if (result == true) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Login Successful!')),
-                  );
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => DashboardScreen()), (root) => false);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Login Failed!')),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondaryColor,
+              const SizedBox(height: 20,),
+              ElevatedButton(
+                onPressed: () async {
+                  final result = await authService.login(emailController.text, passwordController.text);
+                  if (result == true) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Login Successful!')),
+                    );
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => DashboardScreen()), (root) => false);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Login Failed!')),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.secondaryColor,
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 1,
+                  alignment: Alignment.center,
+                  child: Text('Login', style: TextStyle(color: AppColors.quaternaryColor),),
+                ),
               ),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 1,
-                alignment: Alignment.center,
-                child: Text('Login', style: TextStyle(color: AppColors.quaternaryColor),),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => RegisterScreen()), (root) => false);
+                },
+                child: Wrap(
+                  children: [
+                    Text('Belum punya akun? '),
+                    Text('Register', style: TextStyle(
+                      color: AppColors.secondaryColor,
+                    ),)
+                  ],
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => RegisterScreen()), (root) => false);
-              },
-              child: Wrap(
-                children: [
-                  Text('Belum punya akun? '),
-                  Text('Register', style: TextStyle(
-                    color: AppColors.secondaryColor,
-                  ),)
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

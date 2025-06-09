@@ -87,7 +87,9 @@ class BookingListScreenState extends State<BookingListScreen>{
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
                               image: DecorationImage(
-                                  image: NetworkImage(datas.image??""),
+                                  image:datas.image?.isNotEmpty == true 
+                                      ? NetworkImage(datas.image??"") 
+                                      : AssetImage("assets/icons/ic_logo.png"),
                                   fit: BoxFit.fill
                               )
                           ),

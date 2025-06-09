@@ -41,86 +41,88 @@ class RegisterScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 120),
-              child: Image.asset("assets/icons/ic_logo.png", scale: 3,),
-            ),
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 120),
+                child: Image.asset("assets/icons/ic_logo.png", scale: 3,),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: phoneController,
-              decoration: InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              TextField(
+                controller: phoneController,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () async {
-                print("register account ${emailController.text} ${passwordController.text}");
-                // Panggil fungsi register dari AuthService
-                await authService.register(
-                  emailController.text,
-                  passwordController.text,
-                  nameController.text,
-                  phoneController.text,
-                );
+              SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () async {
+                  print("register account ${emailController.text} ${passwordController.text}");
+                  // Panggil fungsi register dari AuthService
+                  await authService.register(
+                    emailController.text,
+                    passwordController.text,
+                    nameController.text,
+                    phoneController.text,
+                  );
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Registration Successful!')),
-                );
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (root) => false); // Kembali ke halaman sebelumnya
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondaryColor,
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Registration Successful!')),
+                  );
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (root) => false); // Kembali ke halaman sebelumnya
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.secondaryColor,
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 1,
+                  alignment: Alignment.center,
+                  child: Text('Register', style: TextStyle(color: AppColors.quaternaryColor),),
+                ),
               ),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 1,
-                alignment: Alignment.center,
-                child: Text('Register', style: TextStyle(color: AppColors.quaternaryColor),),
+              SizedBox(height: 16),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (root) => false); // Ke halaman login
+                },
+                child: Wrap(
+                  children: [
+                    Text('Sudah punya akun? '),
+                    Text('Login here', style: TextStyle(
+                      color: AppColors.secondaryColor,
+                    ))
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (root) => false); // Ke halaman login
-              },
-              child: Wrap(
-                children: [
-                  Text('Sudah punya akun? '),
-                  Text('Login here', style: TextStyle(
-                    color: AppColors.secondaryColor,
-                  ))
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
