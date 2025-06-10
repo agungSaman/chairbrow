@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
-import 'booking_detail_screen.dart';
+import 'bookings/booking_detail_screen.dart';
 
 class HistoryScreen extends StatelessWidget {
   final BookingService bookingService = BookingService(

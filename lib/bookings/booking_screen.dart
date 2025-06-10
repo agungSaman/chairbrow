@@ -4,7 +4,7 @@ import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'model/ListItem.dart';
+import '../model/ListItem.dart';
 
 class BookingScreen extends StatelessWidget {
   final BookingService bookingService = BookingService(

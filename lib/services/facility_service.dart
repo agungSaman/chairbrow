@@ -1,13 +1,23 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class FacilityService {
+class FacilityService with ChangeNotifier {
   final SupabaseClient supabase;
 
   FacilityService(this.supabase);
+
+  List<Map<String, dynamic>> _facilities = [];
+
+  List<Map<String, dynamic>> get facilities => _facilities;
+
+  Future<void> fetchFacilities(FacilityService facilityService) async {
+    _facilities = await facilityService.getAllFacilities();
+    notifyListeners();
+  }
 
   Future<List<Map<String, dynamic>>> getAllFacilities() async {
     final response = await supabase.from('Facilities').select('*');
@@ -47,6 +57,18 @@ class FacilityService {
   }
 
   Future<void> deleteFacility(String facilityId) async {
-    await supabase.from('Facilities').delete().eq('id', facilityId);
+    try {
+      print('Deleting bookings for facility ID: $facilityId');
+      await supabase.from('Bookings').delete().match({'facility_id': facilityId});
+
+      print('Deleting facility with ID: $facilityId');
+      await supabase.from('Facilities').delete().match({'id': facilityId});
+
+      print('Facility and related bookings deleted successfully.');
+      getAllFacilities();
+    } catch (e) {
+      print('Error deleting facility: ${e.toString()}');
+      rethrow;
+    }
   }
 }

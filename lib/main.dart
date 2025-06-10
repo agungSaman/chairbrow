@@ -1,7 +1,10 @@
+import 'package:chairbrow/provider/FacilityProvider.dart';
+import 'package:chairbrow/services/facility_service.dart';
 import 'package:chairbrow/splash_screen.dart';
 import 'package:chairbrow/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'firebase_options.dart';
@@ -30,7 +33,17 @@ void main() async {
       )
   );
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => FacilityProvider(),
+        ),
+        // Tambahkan provider lain jika diperlukan
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
