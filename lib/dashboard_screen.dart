@@ -12,9 +12,12 @@ import 'facilities/add_facility_screen.dart';
 import 'bookings/booking_list_screen.dart';
 import 'facilities/facilities_screen.dart';
 import 'history_screen.dart';
+import 'home/home_adm_screen.dart';
+import 'home/home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final int currentPages;
+  const DashboardScreen({super.key, required this.currentPages});
 
   @override
   State<DashboardScreen> createState() => DashboardScreenState();
@@ -81,13 +84,33 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   late TabController tabController;
   late String userRoles;
   late List<Map<String, dynamic>> facilities;
+  late List<Widget> pages;
+  late List<Widget> pages1;
+  late int currentPage;
 
   @override
   void initState() {
     super.initState();
     userRoles = "";
+    currentPage = widget.currentPages;
     facilities = [];
     tabController = TabController(length: 4, vsync: this);
+
+    pages = [
+      HomeScreen(bookingService: bookingService,),
+      BookingListScreen(),
+      HistoryScreen(),
+      SettingsScreen(),
+    ];
+
+    pages1 = [
+      HomeAdmScreen(bookingService: bookingService, facilityService: facilityService,),
+      BookingAdmScreen(bookingService: bookingService),
+      FacilitiesTab(facilityService: facilityService),
+      ReportScreen(bookingService: bookingService),
+      SettingsScreen(),
+    ];
+
     _loadUserData();
   }
 
@@ -102,89 +125,47 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   Widget build(BuildContext context) {
     if (userRoles == "users") {
       return Scaffold(
-        appBar: AppBar(title: Text('Dashboard')),
         body: Container(
           padding: EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BookingListScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondaryColor,
-                ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  alignment: Alignment.center,
-                  child: Text('Booking Facility', style: TextStyle(color: AppColors.quaternaryColor)),
-                ),
+          child: pages[currentPage],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: AppColors.primaryColor,
+            currentIndex: currentPage,
+            onTap: (val) {
+              setState(() {
+                currentPage = val;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home, color: Colors.grey,),
+                  activeIcon: Icon(Icons.home, color: AppColors.primaryColor,),
+                  label: "Home"
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HistoryScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondaryColor,
-                ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  alignment: Alignment.center,
-                  child: Text('View History', style: TextStyle(color: AppColors.quaternaryColor)),
-                ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.accessible_outlined, color: Colors.grey,),
+                  activeIcon: Icon(Icons.accessible_outlined, color: AppColors.primaryColor,),
+                  label: "Booking"
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondaryColor,
-                ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  alignment: Alignment.center,
-                  child: Text('Account Settings', style: TextStyle(color: AppColors.quaternaryColor)),
-                ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.history, color: Colors.grey,),
+                  activeIcon: Icon(Icons.history, color: AppColors.primaryColor,),
+                  label: "History"
               ),
-            ],
-          ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_box, color: Colors.grey,),
+                  activeIcon: Icon(Icons.account_box, color: AppColors.primaryColor,),
+                  label: "Setting"
+              ),
+            ]
         ),
       );
     } else {
       return Scaffold(
-        appBar: AppBar(
-          title: Text('Admin Dashboard'),
-          bottom: TabBar(
-            controller: tabController,
-            tabs: [
-              Tab(text: 'Bookings'),
-              Tab(text: 'Facilities'),
-              Tab(text: 'Usage Report'),
-              Tab(text: "Settings",)
-            ],
-          ),
-        ),
-        body: TabBarView(
-            controller: tabController,
-            children: [
-              BookingAdmScreen(bookingService: bookingService),
-
-              FacilitiesTab(facilityService: facilityService),
-
-              ReportScreen(bookingService: bookingService),
-
-              SettingsScreen(),
-            ]
+        body: Container(
+          padding: EdgeInsets.all(10),
+          child: pages1[currentPage],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -194,6 +175,42 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
             );
           },
           child: Icon(Icons.add),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: AppColors.primaryColor,
+            currentIndex: currentPage,
+            onTap: (val) {
+              setState(() {
+                currentPage = val;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home, color: Colors.grey,),
+                  activeIcon: Icon(Icons.home, color: AppColors.primaryColor,),
+                  label: "Home"
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.receipt_long_outlined, color: Colors.grey,),
+                  activeIcon: Icon(Icons.receipt_long_outlined, color: AppColors.primaryColor,),
+                  label: "Bookings"
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.accessible_sharp, color: Colors.grey,),
+                  activeIcon: Icon(Icons.accessible_sharp, color: AppColors.primaryColor,),
+                  label: "Facilities"
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.report_gmailerrorred, color: Colors.grey,),
+                  activeIcon: Icon(Icons.report_gmailerrorred, color: AppColors.primaryColor,),
+                  label: "Usage Report"
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_box, color: Colors.grey,),
+                  activeIcon: Icon(Icons.account_box, color: AppColors.primaryColor,),
+                  label: "Setting"
+              ),
+            ]
         ),
       );
     }

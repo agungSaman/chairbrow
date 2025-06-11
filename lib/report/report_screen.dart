@@ -73,35 +73,40 @@ class ReportScreen extends StatelessWidget{
           return Center(child: Text('No usage report available.'));
         } else {
           final report = snapshot.data!;
-          return Column(
-            children: [
-              Expanded(
-                  child: ListView.builder(
-                    itemCount: report.length,
-                    itemBuilder: (context, index) {
-                      final entry = report[index];
-                      return ListTile(
-                        title: Text(entry['facility_name']),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Total Bookings: ${entry['total_bookings']}'),
-                            Text('Approved: ${entry['approved_count']}'),
-                            Text('Pending: ${entry['pending_count']}'),
-                          ],
-                        ),
-                      );
-                    },
-                  )
-              ),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Usage Report'),
+            ),
+            body: Column(
+              children: [
+                Expanded(
+                    child: ListView.builder(
+                      itemCount: report.length,
+                      itemBuilder: (context, index) {
+                        final entry = report[index];
+                        return ListTile(
+                          title: Text(entry['facility_name']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Total Bookings: ${entry['total_bookings']}'),
+                              Text('Approved: ${entry['approved_count']}'),
+                              Text('Pending: ${entry['pending_count']}'),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                ),
 
-              ElevatedButton(
-                onPressed: () async {
-                  await _downloadCSV(context);
-                },
-                child: Text('Download CSV'),
-              ),
-            ],
+                ElevatedButton(
+                  onPressed: () async {
+                    await _downloadCSV(context);
+                  },
+                  child: Text('Download CSV'),
+                ),
+              ],
+            ),
           );
         }
       },

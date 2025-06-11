@@ -1,5 +1,4 @@
 import 'package:chairbrow/provider/FacilityProvider.dart';
-import 'package:chairbrow/services/facility_service.dart';
 import 'package:chairbrow/splash_screen.dart';
 import 'package:chairbrow/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';

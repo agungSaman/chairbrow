@@ -38,16 +38,12 @@ class HistoryScreen extends StatelessWidget {
         future: bookingService.getBookingHistory(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Menampilkan indikator loading saat data sedang diambil
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Menampilkan pesan error jika terjadi kesalahan
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Menampilkan pesan jika tidak ada riwayat pemesanan
             return Center(child: Text('No booking history found.'));
           } else {
-            // Menampilkan daftar riwayat pemesanan
             final bookings = snapshot.data!;
             return ListView.builder(
               itemCount: bookings.length,
@@ -56,6 +52,7 @@ class HistoryScreen extends StatelessWidget {
                 return Container(
                   margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: Colors.grey
                     ),

@@ -11,9 +11,11 @@ class AddFacilityDialog extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  late String imageUrl = "";
+
 
   AddFacilityDialog({super.key, required this.facilityService});
+
+  late String imageUrl = "";
 
   @override
   Widget build(BuildContext context) {

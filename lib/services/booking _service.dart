@@ -16,7 +16,7 @@ class BookingService {
     final userId = sharedPreferences?.getString("user_id");
     if (userId != null) {
       print('Authenticated user UID: $userId');
-      custId = await supabase.from('Customers').select('id').eq('user_id', userId??"");
+      custId = await supabase.from('Customers').select('id').eq('user_id', userId);
     } else {
       print('User is not authenticated!');
     }
@@ -38,7 +38,7 @@ class BookingService {
     final userId = sharedPreferences?.getString("user_id");
     if (userId != null) {
       print('Authenticated user UID: $userId');
-      custId = await supabase.from('Customers').select('id').eq('user_id', userId??"");
+      custId = await supabase.from('Customers').select('id').eq('user_id', userId);
     } else {
       print('User is not authenticated!');
     }

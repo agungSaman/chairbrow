@@ -22,29 +22,57 @@ class FacilitiesTab extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return ListView.builder(
-            itemCount: facilityProvider.facilities.length,
-            itemBuilder: (context, index) {
-              final facility = facilityProvider.facilities[index];
-              return ListTile(
-                title: Text(facility['facility_name']),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async {
-                    try {
-                      await facilityProvider.deleteFacility(facility['id'], facilityService);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${facility['facility_name']} deleted.')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error deleting facility: ${e.toString()}')),
-                      );
-                    }
-                  },
-                ),
-              );
-            },
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Facilities'),
+            ),
+            body: ListView.builder(
+              itemCount: facilityProvider.facilities.length,
+              itemBuilder: (context, index) {
+                final facility = facilityProvider.facilities[index];
+                return ListTile(
+                  title: Text(facility['facility_name']),
+                  trailing: SizedBox(
+                    height: MediaQuery.of(context).size.height * .05,
+                    width: MediaQuery.of(context).size.width * .27,
+                    child: Row(
+                      children: [
+                        Switch(
+                            value: facility['availability'],
+                            onChanged: (value) async {
+                              try {
+                                await facilityProvider.updateFacility(facility['id'], value, facilityService);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('${facility['facility_name']} updated.')),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error updated facility: ${e.toString()}')),
+                                );
+                              }
+                            }
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () async {
+                            try {
+                              await facilityProvider.deleteFacility(facility['id'], facilityService);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('${facility['facility_name']} deleted.')),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Error deleting facility: ${e.toString()}')),
+                              );
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           );
         }
       },

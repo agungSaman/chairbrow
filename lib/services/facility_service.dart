@@ -71,4 +71,10 @@ class FacilityService with ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> updateFacility(String facilityId, bool availability) {
+    return supabase.from('Facilities').update({
+      'availability': availability,
+    }).match({'id': facilityId});
+  }
 }

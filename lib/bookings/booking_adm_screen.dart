@@ -53,31 +53,36 @@ class BookingAdmScreen extends StatelessWidget{
           return Center(child: Text('No bookings found.'));
         } else {
           final bookings = snapshot.data!;
-          return ListView.builder(
-            itemCount: bookings.length,
-            itemBuilder: (context, index) {
-              final booking = bookings[index];
-              return Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color: Colors.grey
-                    )
-                ),
-                child: ListTile(
-                  title: Text(booking['Facilities']['facility_name']),
-                  subtitle: Text('${booking['status']} - ${DateFormat("EE, dd MMMM yyyy").format(DateTime.parse(booking['booking_date'] ))}'),
-                  trailing: GestureDetector(
-                    onTap: () {
-                      scanQR(context);
-                    },
-                    child: Icon(Icons.qr_code_2),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Bookings'),
+            ),
+            body: ListView.builder(
+              itemCount: bookings.length,
+              itemBuilder: (context, index) {
+                final booking = bookings[index];
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: Colors.grey
+                      )
                   ),
-                ),
-              );
-            },
+                  child: ListTile(
+                    title: Text(booking['Facilities']['facility_name']),
+                    subtitle: Text('${booking['status']} - ${DateFormat("EE, dd MMMM yyyy, HH:mm").format(DateTime.parse(booking['booking_date'] ))}'),
+                    trailing: GestureDetector(
+                      onTap: () {
+                        scanQR(context);
+                      },
+                      child: Icon(Icons.qr_code_2),
+                    ),
+                  ),
+                );
+              },
+            ),
           );
         }
       },

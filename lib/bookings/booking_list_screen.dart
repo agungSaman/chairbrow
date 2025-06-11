@@ -46,7 +46,7 @@ class BookingListScreenState extends State<BookingListScreen>{
   }
 
   Future<void> _loadItemData() async {
-    final data = await bookingService.getListItem();;
+    final data = await bookingService.getListItem();
     setState(() {
       item = data.map((value) => ListItem.fromJson(value)).toList();
       log("resultItem ${item[0].image}");
@@ -66,10 +66,16 @@ class BookingListScreenState extends State<BookingListScreen>{
                 var datas = item[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => BookingScreen(item: datas),
-                    ));
+                    if (datas.availability == true) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookingScreen(item: datas),
+                          ));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Facility is not available')),
+                      );
+                    }
                   },
                   child: Container(
                     height: MediaQuery.of(context).size.height * .2,
@@ -79,37 +85,54 @@ class BookingListScreenState extends State<BookingListScreen>{
                         color: AppColors.primaryColor,
                         borderRadius: BorderRadius.circular(16)
                     ),
-                    child: Row(
+                    child: Stack(
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * .2,
-                          width: MediaQuery.of(context).size.width * .4,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              image: DecorationImage(
-                                  image:datas.image?.isNotEmpty == true 
-                                      ? NetworkImage(datas.image??"") 
-                                      : AssetImage("assets/icons/ic_logo.png"),
-                                  fit: BoxFit.fill
-                              )
-                          ),
+                        Row(
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * .2,
+                              width: MediaQuery.of(context).size.width * .4,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  image: DecorationImage(
+                                      image:datas.image?.isNotEmpty == true
+                                          ? NetworkImage(datas.image??"")
+                                          : AssetImage("assets/icons/ic_logo.png"),
+                                      fit: BoxFit.fill
+                                  )
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.only(left: 5),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(datas.facilityName??"", style: TextStyle(
+                                      color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600
+                                  ),),
+                                  Text(datas.condition??"", style: TextStyle(
+                                      color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500
+                                  ),),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
 
-                        Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(datas.facilityName??"", style: TextStyle(
-                                  color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600
-                              ),),
-                              Text(datas.condition??"", style: TextStyle(
-                                  color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500
-                              ),),
-                            ],
-                          ),
-                        )
+                        Positioned(
+                            top: 10,
+                            left: 320,
+                            right: 10,
+                            bottom: 132,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: datas.availability == true ? AppColors.secondaryColor : Colors.red,
+                                  borderRadius: BorderRadius.circular(24)
+                              ),
+                            )
+                        ),
                       ],
                     ),
                   ),

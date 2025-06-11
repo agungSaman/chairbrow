@@ -18,6 +18,12 @@ class FacilityProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateFacility(String facilityId, bool availability, FacilityService facilityService) async {
+    await facilityService.updateFacility(facilityId, availability);
+    await fetchFacilities(facilityService);
+    notifyListeners();
+  }
+
   Future<void> deleteFacility(String facilityId, FacilityService facilityService) async {
     await facilityService.deleteFacility(facilityId);
     await fetchFacilities(facilityService);

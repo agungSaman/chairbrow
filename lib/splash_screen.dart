@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
   checkUserLogin() async {
     final result = await authService.checkUserLogin();
     if (result == true) {
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => DashboardScreen()), (root) => false);
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => DashboardScreen(currentPages: 0,)), (root) => false);
     } else {
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginRegisterScreen()), (root) => false);
     }
