@@ -1,12 +1,14 @@
 import 'package:chairbrow/dashboard_screen.dart';
-import 'package:chairbrow/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
-import '../provider/FacilityProvider.dart';
-import '../services/booking _service.dart';
-import '../services/facility_service.dart';
+import '../../Core/provider/FacilityProvider.dart';
+import '../../Core/services/booking _service.dart';
+import '../../Core/services/facility_service.dart';
+
 
 class HomeAdmScreen extends StatefulWidget{
   final BookingService bookingService;
@@ -18,6 +20,37 @@ class HomeAdmScreen extends StatefulWidget{
 }
 
 class HomeAdmScreenState extends State<HomeAdmScreen> {
+
+  _handleScanResult(BuildContext context, String result) async {
+    await widget.bookingService.updateBookingStatus(result, "approved");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Status updated')),
+    );
+  }
+
+  Future<void> scanQR(BuildContext context) async {
+    String? barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await SimpleBarcodeScanner.scanBarcode(
+        context,
+        barcodeAppBar: const BarcodeAppBar(
+          appBarTitle: 'Scan Kode Booking',
+          centerTitle: false,
+          enableBackButton: true,
+          backButtonIcon: Icon(Icons.arrow_back_ios),
+        ),
+        isShowFlashIcon: true,
+        delayMillis: 2000,
+        cameraFace: CameraFace.front,
+      );
+      print(barcodeScanRes);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    _handleScanResult(context, barcodeScanRes??"");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,67 +182,72 @@ class HomeAdmScreenState extends State<HomeAdmScreen> {
                                     children: List.generate(facilities.length,
                                             (index) {
                                           final facility = facilities[index];
-                                          return Container(
-                                            padding: EdgeInsets.all(10),
-                                            margin: EdgeInsets.only(right: 5, top: 5),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(16),
-                                              border: Border.all(
-                                                color: Colors.grey
-                                              )
-                                            ),
-                                            child: Column(
-                                                children: [
-                                                  Container(
-                                                    height: 100,
-                                                    width: 150,
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(facility['image']),
-                                                          fit: BoxFit.fill
-                                                      )
+                                          return GestureDetector(
+                                            onTap: () {
+                                              scanQR(context);
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.all(10),
+                                              margin: EdgeInsets.only(right: 5, top: 5),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(16),
+                                                  border: Border.all(
+                                                      color: Colors.grey
+                                                  )
+                                              ),
+                                              child: Column(
+                                                  children: [
+                                                    Container(
+                                                      height: 100,
+                                                      width: 150,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(facility['image']),
+                                                              fit: BoxFit.fill
+                                                          )
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text(facility['facility_name']),
-                                                  SizedBox(
-                                                    height: MediaQuery.of(context).size.height * .05,
-                                                    width: MediaQuery.of(context).size.width * .27,
-                                                    child: Row(
-                                                      children: [
-                                                        Switch(
-                                                            value: facility['availability'],
-                                                            onChanged: (value) async {
+                                                    Text(facility['facility_name']),
+                                                    SizedBox(
+                                                      height: MediaQuery.of(context).size.height * .05,
+                                                      width: MediaQuery.of(context).size.width * .29,
+                                                      child: Row(
+                                                        children: [
+                                                          Switch(
+                                                              value: facility['availability'],
+                                                              onChanged: (value) async {
+                                                                try {
+                                                                  await facilityProvider.updateFacility(facility['id'], value, widget.facilityService);
+                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                    SnackBar(content: Text('${facility['facility_name']} updated.')),
+                                                                  );
+                                                                } catch (e) {
+                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                    SnackBar(content: Text('Error updated facility: ${e.toString()}')),
+                                                                  );
+                                                                }
+                                                              }
+                                                          ),
+                                                          IconButton(
+                                                            icon: Icon(Icons.delete),
+                                                            onPressed: () async {
                                                               try {
-                                                                await facilityProvider.updateFacility(facility['id'], value, widget.facilityService);
+                                                                await facilityProvider.deleteFacility(facility['id'], widget.facilityService);
                                                                 ScaffoldMessenger.of(context).showSnackBar(
-                                                                  SnackBar(content: Text('${facility['facility_name']} updated.')),
+                                                                  SnackBar(content: Text('${facility['facility_name']} deleted.')),
                                                                 );
                                                               } catch (e) {
                                                                 ScaffoldMessenger.of(context).showSnackBar(
-                                                                  SnackBar(content: Text('Error updated facility: ${e.toString()}')),
+                                                                  SnackBar(content: Text('Error deleting facility: ${e.toString()}')),
                                                                 );
                                                               }
-                                                            }
-                                                        ),
-                                                        IconButton(
-                                                          icon: Icon(Icons.delete),
-                                                          onPressed: () async {
-                                                            try {
-                                                              await facilityProvider.deleteFacility(facility['id'], widget.facilityService);
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                SnackBar(content: Text('${facility['facility_name']} deleted.')),
-                                                              );
-                                                            } catch (e) {
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                SnackBar(content: Text('Error deleting facility: ${e.toString()}')),
-                                                              );
-                                                            }
-                                                          },
-                                                        )
-                                                      ],
+                                                            },
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ]
+                                                  ]
+                                              ),
                                             ),
                                           );
                                         }),

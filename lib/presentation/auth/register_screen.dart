@@ -1,9 +1,10 @@
-import 'package:chairbrow/login_screen.dart';
-import 'package:chairbrow/utils/colors.dart';
-import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../services/auth_service.dart';
+
+import '../../Core/services/auth_service.dart';
+import '../../Core/utils/colors.dart';
+import '../../Core/utils/constant.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   final AuthService authService = AuthService(
@@ -28,6 +29,7 @@ class RegisterScreen extends StatelessWidget {
   // Controllers untuk input form
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController birthdateController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -65,6 +67,34 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
+              GestureDetector(
+                onTap: () async {
+                  var date = await showDatePicker(
+                      context: context,
+                      currentDate: DateTime.now(),
+                      initialEntryMode: DatePickerEntryMode.calendar,
+                      firstDate: DateTime(1900, 1, 1),
+                      lastDate: DateTime(2125, 1, 1));
+
+                  birthdateController.text = date.toString();
+                  print("tanggal lahir ${birthdateController.text}");
+                },
+                child: TextField(
+                  controller: birthdateController,
+                  enabled: false,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    label: Text('Tanggal Lahir'),
+                    labelStyle: TextStyle(color: Colors.black),
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.black.withOpacity(0.5)
+                        )
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16,),
               TextField(
                 controller: phoneController,
                 decoration: InputDecoration(
@@ -84,19 +114,26 @@ class RegisterScreen extends StatelessWidget {
               SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  print("register account ${emailController.text} ${passwordController.text}");
-                  // Panggil fungsi register dari AuthService
-                  await authService.register(
-                    emailController.text,
-                    passwordController.text,
-                    nameController.text,
-                    phoneController.text,
-                  );
+                  if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty && nameController.text.isNotEmpty && phoneController.text.isNotEmpty && birthdateController.text.isNotEmpty) {
+                    print("register account ${emailController.text} ${passwordController.text}");
+                    // Panggil fungsi register dari AuthService
+                    await authService.register(
+                      emailController.text,
+                      passwordController.text,
+                      nameController.text,
+                      phoneController.text,
+                      birthdateController.text,
+                    );
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Registration Successful!')),
-                  );
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (root) => false); // Kembali ke halaman sebelumnya
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Registration Successful!')),
+                    );
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (root) => false); // Kembali ke halaman sebelumnya
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please fill in all fields.')),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.secondaryColor,

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/FacilityProvider.dart';
-import '../services/facility_service.dart';
+import '../../Core/provider/FacilityProvider.dart';
+import '../../Core/services/facility_service.dart';
+
 
 class FacilitiesTab extends StatelessWidget {
   final FacilityService facilityService;
@@ -34,7 +35,7 @@ class FacilitiesTab extends StatelessWidget {
                   title: Text(facility['facility_name']),
                   trailing: SizedBox(
                     height: MediaQuery.of(context).size.height * .05,
-                    width: MediaQuery.of(context).size.width * .27,
+                    width: MediaQuery.of(context).size.width * .29,
                     child: Row(
                       children: [
                         Switch(

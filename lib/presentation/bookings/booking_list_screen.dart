@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:chairbrow/model/ListItem.dart';
-import 'package:chairbrow/services/booking%20_service.dart';
-import 'package:chairbrow/utils/colors.dart';
-import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../Core/model/ListItem.dart';
+import '../../Core/services/booking _service.dart';
+import '../../Core/utils/colors.dart';
+import '../../Core/utils/constant.dart';
 import 'booking_screen.dart';
 
 class BookingListScreen extends StatefulWidget{
@@ -67,10 +67,16 @@ class BookingListScreenState extends State<BookingListScreen>{
                 return GestureDetector(
                   onTap: () {
                     if (datas.availability == true) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => BookingScreen(item: datas),
-                          ));
+                      if (datas.statusUsage == "available") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => BookingScreen(item: datas),
+                            ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Facility is on-usage')),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Facility is not available')),
@@ -123,13 +129,43 @@ class BookingListScreenState extends State<BookingListScreen>{
 
                         Positioned(
                             top: 10,
-                            left: 320,
-                            right: 10,
+                            left: 10,
+                            right: 320,
                             bottom: 132,
                             child: Container(
                               decoration: BoxDecoration(
                                   color: datas.availability == true ? AppColors.secondaryColor : Colors.red,
                                   borderRadius: BorderRadius.circular(24)
+                              ),
+                            )
+                        ),
+
+                        Positioned(
+                            top: 10,
+                            left: 180,
+                            right: 10,
+                            bottom: 112,
+                            child: Container(
+                              padding: EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.white
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: datas.statusUsage == "available"
+                                        ? Colors.green
+                                        : datas.statusUsage == "on-usage"
+                                        ? Colors.orange
+                                        : Colors.red,
+                                  ),
+                                  Text(datas.statusUsage??"", style: TextStyle(
+                                      color: Colors.black
+                                  ))
+                                ],
                               ),
                             )
                         ),

@@ -1,10 +1,11 @@
-import 'package:chairbrow/services/booking%20_service.dart';
-import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
-import 'bookings/booking_detail_screen.dart';
+import '../../Core/services/booking _service.dart';
+import '../../Core/utils/constant.dart';
+import '../bookings/booking_detail_screen.dart';
+
 
 class HistoryScreen extends StatelessWidget {
   final BookingService bookingService = BookingService(

@@ -1,10 +1,10 @@
-import 'package:chairbrow/services/auth_service.dart';
-import 'package:chairbrow/utils/colors.dart';
-import 'package:chairbrow/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../Core/services/auth_service.dart';
+import '../../Core/utils/colors.dart';
+import '../../Core/utils/constant.dart';
+import '../../dashboard_screen.dart';
 import 'LoginRegisterScreen.dart';
-import 'dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

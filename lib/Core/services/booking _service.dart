@@ -1,6 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase/supabase.dart';
 
+import '../model/booking_stats.dart';
+
 class BookingService {
   final SupabaseClient supabase;
 
@@ -9,7 +11,7 @@ class BookingService {
   SharedPreferences? sharedPreferences;
 
   /// Membuat pemesanan baru
-  Future<void> createBooking(String facilityId, DateTime bookingDate) async {
+  Future<void> createBooking(String facilityId, String flightNumber, DateTime bookingDate) async {
     // Ambil ID pengguna yang sedang login
     List<Map<String, dynamic>>? custId;
     sharedPreferences = await SharedPreferences.getInstance();
@@ -26,6 +28,7 @@ class BookingService {
       'user_id': custId?[0]['id'],
       'facility_id': facilityId,
       'booking_date': bookingDate.toIso8601String(),
+      'flight_number': flightNumber,
       'status': 'pending',
     });
   }
@@ -68,20 +71,60 @@ class BookingService {
     await supabase.from('Bookings').update({
       'status': newStatus,
     }).eq('id', bookingId);
+
+    final response = await supabase
+        .from('Bookings')
+        .select('*')
+        .eq('id', bookingId);
+
+    await supabase.from('Facilities').update({
+      'status_usage': 'on-usage',
+    }).eq('id', response[0]['facility_id']);
   }
 
-  Future<List<Map<String, dynamic>>> getUsageReport() async {
+  Future<void> updateBookingSelesai(String bookingId, String newStatus) async {
+    await supabase.from('Bookings').update({
+      'status': newStatus,
+    }).eq('id', bookingId);
+
+    final response = await supabase
+        .from('Bookings')
+        .select('*')
+        .eq('id', bookingId);
+
+    await supabase.from('Facilities').update({
+      'status_usage': 'available',
+    }).eq('id', response[0]['facility_id']);
+  }
+
+  Future<List<BookingStats>> getUsageReport({DateTime? startDate, DateTime? endDate}) async {
+    String? startDatePostgresFormat;
+    String? endDatePostgresFormat;
+
+    if (startDate != null) {
+      startDatePostgresFormat = startDate.toIso8601String().split('.')[0];
+    }
+    if (endDate != null) {
+      endDatePostgresFormat = endDate.toIso8601String().split('.')[0];
+    }
+
     try {
-      final response = await supabase.rpc('get_usage_report');
+      final response = await supabase.rpc('get_facility_booking_stats', params: {
+        'p_start_date': startDatePostgresFormat,
+        'p_end_date': endDatePostgresFormat,
+      },);
+
       print('Raw Response: $response'); // Debugging
 
-      if (response is List<dynamic>) {
-        final data = response.cast<Map<String, dynamic>>();
-        print('Parsed Data: $data'); // Debugging
-        return data;
-      } else {
-        throw Exception('Unexpected response format');
+      if (response is List && response.isNotEmpty) {
+        List<BookingStats> bookingReport = response
+            .map((item) => BookingStats.fromJson(item as Map<String, dynamic>))
+            .toList();
+
+        print('Parsed Report: $bookingReport');
+        return bookingReport;
       }
+      return [];
     } catch (e) {
       print('Error fetching usage report: ${e.toString()}');
       rethrow;

@@ -30,6 +30,7 @@ class FacilityService with ChangeNotifier {
       'availability': true,
       'condition': desc,
       'image': image,
+      'status_usage': 'available',
     });
   }
 
@@ -75,6 +76,7 @@ class FacilityService with ChangeNotifier {
   Future<void> updateFacility(String facilityId, bool availability) {
     return supabase.from('Facilities').update({
       'availability': availability,
+      'status_usage': availability == true ? 'available' : 'not-available'
     }).match({'id': facilityId});
   }
 }

@@ -5,6 +5,7 @@ class ListItem {
     this.availability,
     this.condition,
     this.image,
+    this.statusUsage,
   });
 
   final String? id;
@@ -12,6 +13,7 @@ class ListItem {
   final bool? availability;
   final String? condition;
   final String? image;
+  final String? statusUsage;
 
   factory ListItem.fromJson(Map<String, dynamic> json){
     return ListItem(
@@ -20,6 +22,7 @@ class ListItem {
       availability: json["availability"] ?? false,
       condition: json["condition"] ?? "",
       image: json["image"] ?? "",
+      statusUsage: json["status_usage"] ?? "",
     );
   }
 
@@ -29,5 +32,6 @@ class ListItem {
     "availability": availability,
     "condition": condition,
     "image": image,
+    "status_usage": statusUsage,
   };
 }

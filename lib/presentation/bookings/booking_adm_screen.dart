@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
-import '../services/booking _service.dart';
+import '../../Core/services/booking _service.dart';
 
 class BookingAdmScreen extends StatelessWidget{
   final BookingService bookingService;

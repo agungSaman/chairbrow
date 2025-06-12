@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../Core/model/ListItem.dart';
+import '../../Core/services/booking _service.dart';
+import '../../Core/utils/colors.dart';
+import '../../dashboard_screen.dart';
 import '../bookings/booking_detail_screen.dart';
 import '../bookings/booking_screen.dart';
-import '../dashboard_screen.dart';
-import '../model/ListItem.dart';
-import '../services/booking _service.dart';
-import '../utils/colors.dart';
 
 class HomeScreen extends StatefulWidget{
   final BookingService bookingService;
@@ -169,10 +169,16 @@ class HomeScreenState extends State<HomeScreen>{
                               return GestureDetector(
                                 onTap: () {
                                   if (datas.availability == true) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => BookingScreen(item: datas),
-                                        ));
+                                    if (datas.statusUsage == "available") {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => BookingScreen(item: datas),
+                                          ));
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Facility is on-usage')),
+                                      );
+                                    }
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text('Facility is not available')),
@@ -180,6 +186,7 @@ class HomeScreenState extends State<HomeScreen>{
                                   }
                                 },
                                 child: Container(
+                                  width: MediaQuery.of(context).size.width * .70,
                                   margin: EdgeInsets.only(right: 10),
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
@@ -191,8 +198,8 @@ class HomeScreenState extends State<HomeScreen>{
                                       Row(
                                         children: [
                                           Container(
-                                            height: MediaQuery.of(context).size.height * .2,
-                                            width: MediaQuery.of(context).size.width * .4,
+                                            height: MediaQuery.of(context).size.height * .15,
+                                            width: MediaQuery.of(context).size.width * .3,
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(16),
                                                 image: DecorationImage(
@@ -225,10 +232,40 @@ class HomeScreenState extends State<HomeScreen>{
                                       Positioned(
                                           top: 10,
                                           left: 0,
-                                          right: 10,
-                                          bottom: 145,
+                                          right: 220,
+                                          bottom: 105,
                                           child: CircleAvatar(
                                             backgroundColor: datas.availability == true ? AppColors.secondaryColor : Colors.red,
+                                          )
+                                      ),
+
+                                      Positioned(
+                                          top: 10,
+                                          left: 140,
+                                          right: 0,
+                                          bottom: 90,
+                                          child: Container(
+                                            padding: EdgeInsets.all(3),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(16),
+                                              color: Colors.white
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: datas.statusUsage == "available"
+                                                      ? Colors.green
+                                                      : datas.statusUsage == "on-usage"
+                                                      ? Colors.orange
+                                                      : Colors.red,
+                                                ),
+                                                Text(datas.statusUsage??"", style: TextStyle(
+                                                    color: Colors.black
+                                                ))
+                                              ],
+                                            ),
                                           )
                                       ),
                                     ],

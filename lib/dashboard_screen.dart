@@ -1,19 +1,19 @@
-import 'package:chairbrow/report/report_screen.dart';
-import 'package:chairbrow/services/booking%20_service.dart';
-import 'package:chairbrow/services/facility_service.dart';
-import 'package:chairbrow/services/user_service.dart';
-import 'package:chairbrow/settings_screen.dart';
-import 'package:chairbrow/utils/colors.dart';
-import 'package:chairbrow/utils/constant.dart';
+import 'package:chairbrow/presentation/bookings/booking_adm_screen.dart';
+import 'package:chairbrow/presentation/bookings/booking_list_screen.dart';
+import 'package:chairbrow/presentation/facilities/add_facility_screen.dart';
+import 'package:chairbrow/presentation/facilities/facilities_screen.dart';
+import 'package:chairbrow/presentation/history/history_screen.dart';
+import 'package:chairbrow/presentation/home/home_adm_screen.dart';
+import 'package:chairbrow/presentation/home/home_screen.dart';
+import 'package:chairbrow/presentation/profile/settings_screen.dart';
+import 'package:chairbrow/presentation/report/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'bookings/booking_adm_screen.dart';
-import 'facilities/add_facility_screen.dart';
-import 'bookings/booking_list_screen.dart';
-import 'facilities/facilities_screen.dart';
-import 'history_screen.dart';
-import 'home/home_adm_screen.dart';
-import 'home/home_screen.dart';
+import 'Core/services/booking _service.dart';
+import 'Core/services/facility_service.dart';
+import 'Core/services/user_service.dart';
+import 'Core/utils/colors.dart';
+import 'Core/utils/constant.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int currentPages;
@@ -131,7 +131,9 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         ),
         bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: AppColors.primaryColor,
+            unselectedItemColor: Colors.grey.withOpacity(0.5),
             currentIndex: currentPage,
+            showUnselectedLabels: true,
             onTap: (val) {
               setState(() {
                 currentPage = val;
@@ -156,7 +158,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_box, color: Colors.grey,),
                   activeIcon: Icon(Icons.account_box, color: AppColors.primaryColor,),
-                  label: "Setting"
+                  label: "Profile"
               ),
             ]
         ),
@@ -179,6 +181,8 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: AppColors.primaryColor,
             currentIndex: currentPage,
+            unselectedItemColor: Colors.grey.withOpacity(0.5),
+            showUnselectedLabels: true,
             onTap: (val) {
               setState(() {
                 currentPage = val;
@@ -203,12 +207,12 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
               BottomNavigationBarItem(
                   icon: Icon(Icons.report_gmailerrorred, color: Colors.grey,),
                   activeIcon: Icon(Icons.report_gmailerrorred, color: AppColors.primaryColor,),
-                  label: "Usage Report"
+                  label: "Report"
               ),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_box, color: Colors.grey,),
                   activeIcon: Icon(Icons.account_box, color: AppColors.primaryColor,),
-                  label: "Setting"
+                  label: "Profile"
               ),
             ]
         ),

@@ -1,11 +1,11 @@
-import 'package:chairbrow/provider/FacilityProvider.dart';
-import 'package:chairbrow/splash_screen.dart';
-import 'package:chairbrow/utils/constant.dart';
+import 'package:chairbrow/presentation/auth/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'Core/provider/FacilityProvider.dart';
+import 'Core/utils/constant.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -54,7 +54,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.white,
+            surface: Colors.white
+        ),
         useMaterial3: true,
       ),
       home: SplashScreen(),

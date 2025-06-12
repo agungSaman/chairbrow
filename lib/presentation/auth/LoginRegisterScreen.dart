@@ -1,5 +1,5 @@
-import 'package:chairbrow/utils/colors.dart';
 import 'package:flutter/material.dart';
+import '../../Core/utils/colors.dart';
 import 'login_screen.dart';
 
 class LoginRegisterScreen extends StatelessWidget {

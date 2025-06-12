@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:chairbrow/provider/FacilityProvider.dart';
-import 'package:chairbrow/services/facility_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import '../../Core/provider/FacilityProvider.dart';
+import '../../Core/services/facility_service.dart';
+
 
 class AddFacilityDialog extends StatelessWidget {
   final FacilityService facilityService;

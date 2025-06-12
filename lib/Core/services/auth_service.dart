@@ -14,7 +14,7 @@ class AuthService {
   Session? session;
   SharedPreferences? sharedPreferences;
 
-  Future<void> register(String email, String password, String name, String phone) async {
+  Future<void> register(String email, String password, String name, String phone, String birthDate) async {
     try {
       final AuthResponse response = await supabase.auth.signUp(
         email: email,
@@ -50,6 +50,7 @@ class AuthService {
         'email': email,
         'phone': phone,
         'user_role': "users",
+        'birth_date': birthDate,
         'created_at': response.user!.createdAt, // Ensure this is a string
       }).select();
 
