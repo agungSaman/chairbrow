@@ -169,7 +169,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
           padding: EdgeInsets.all(10),
           child: pages1[currentPage],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: currentPage != 2 ? null : FloatingActionButton(
           onPressed: () {
             showModalBottomSheet(
               context: context,

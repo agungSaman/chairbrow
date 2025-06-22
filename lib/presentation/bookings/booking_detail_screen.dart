@@ -69,6 +69,56 @@ class BookingDetailScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Visibility(
+              visible: booking['status'] == "pending" || booking['status'] == "approved",
+              child: ElevatedButton(
+                onPressed: () async {
+                  bool confirm = await showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Batalkan Booking'),
+                      content: Text('Apakah kamu yakin ingin membatalkan booking ini?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text('Tidak'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text('Ya'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirm) {
+                    await bookingService.updateBookingSelesai(
+                      booking['id'].toString(),
+                      "cancelled",
+                    );
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Booking dibatalkan')),
+                      );
+                      Navigator.pop(context);
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Batalkan Booking',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Visibility(
                 visible: booking['status'] == "done" || booking['status'] == "pending" ? false : true,
                 child: ElevatedButton(
                   onPressed: () {

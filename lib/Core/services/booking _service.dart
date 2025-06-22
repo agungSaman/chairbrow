@@ -83,18 +83,23 @@ class BookingService {
   }
 
   Future<void> updateBookingSelesai(String bookingId, String newStatus) async {
-    await supabase.from('Bookings').update({
-      'status': newStatus,
-    }).eq('id', bookingId);
+    final updates = {'status': newStatus};
+
+    if (newStatus == 'done') {
+      updates['booking_end_date'] = DateTime.now().toIso8601String();
+    }
+
+    await supabase.from('Bookings').update(updates).eq('id', bookingId);
 
     final response = await supabase
         .from('Bookings')
-        .select('*')
-        .eq('id', bookingId);
+        .select('facility_id')
+        .eq('id', bookingId)
+        .single();
 
     await supabase.from('Facilities').update({
       'status_usage': 'available',
-    }).eq('id', response[0]['facility_id']);
+    }).eq('id', response['facility_id']);
   }
 
   Future<List<BookingStats>> getUsageReport({DateTime? startDate, DateTime? endDate}) async {
